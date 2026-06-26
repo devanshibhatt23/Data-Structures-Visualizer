@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Singly Linked List Visualizer — step-by-step animations for linked list operations">
+  <title>Linked List Visualizer — DSA Visualizer</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="nav-back" href="index.html">← Back</a>
+    <h1 class="nav-title">Linked List Visualizer</h1>
+    <span class="nav-badge purple">Linked List</span>
+  </nav>
+
+  <div class="visualizer-page">
+    <!-- Mobile panel tabs -->
+    <div class="mobile-panel-tabs">
+      <button class="active" data-panel="canvas">Visual</button>
+      <button data-panel="pseudocode">Code</button>
+      <button data-panel="log">Log</button>
+    </div>
+
+    <div class="visualizer-layout">
+      <!-- Left: Pseudocode Panel -->
+      <aside class="panel pseudocode-panel mobile-visible" id="pseudocode-panel">
+        <div class="panel-header">Pseudocode</div>
+        <div class="panel-body" id="pseudocode-body"></div>
+      </aside>
+
+      <!-- Center: Canvas -->
+      <section class="canvas-area mobile-visible" id="canvas-area">
+        <div class="visualization-container" id="visualization-container">
+          <div class="empty-state" id="empty-state">
+            <span class="empty-icon">🔗</span>
+            <span>Select an operation and click Run to begin</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Log Panel -->
+      <aside class="panel log-panel" id="log-panel">
+        <div class="panel-header">
+          Operation Log
+          <button class="btn-icon" id="clear-log-btn">Clear</button>
+        </div>
+        <div class="panel-body" id="log-body"></div>
+      </aside>
+    </div>
+
+    <!-- Controls Bar -->
+    <footer class="controls-bar">
+      <div class="controls-left">
+        <div class="select-wrapper">
+          <select class="select-custom" id="operation-select">
+            <option value="create">Create List</option>
+            <option value="search">Search</option>
+            <option value="insert-head">Insert at Head</option>
+            <option value="insert-pos">Insert at Position</option>
+            <option value="delete-head">Delete Head</option>
+            <option value="delete-pos">Delete at Position</option>
+            <option value="find-middle">Find Middle</option>
+          </select>
+        </div>
+
+        <div class="input-group" id="input-group"></div>
+
+        <button class="btn btn-primary" id="run-btn">▶ Run</button>
+      </div>
+
+      <div class="controls-right">
+        <button class="btn btn-secondary" id="play-btn" disabled>▶ Play</button>
+        <button class="btn btn-secondary" id="pause-btn" disabled>⏸ Pause</button>
+        <button class="btn btn-secondary" id="reset-btn">⏹ Reset</button>
+        <div class="controls-divider"></div>
+        <div class="speed-control">
+          <label>Speed</label>
+          <input type="range" class="speed-slider" id="speed-slider" min="0" max="4" value="0" step="1">
+          <span class="speed-label" id="speed-label">1x</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="js/linkedlist-visualizer.js"></script>
+</body>
+</html>
