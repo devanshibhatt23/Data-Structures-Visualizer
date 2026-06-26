@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linked List Visualizer — step-by-step animations">
+  <title>Linked List Visualizer — DSA Visualizer</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script type="module">
+    import { initTheme } from '../js/theme.js';
+    initTheme();
+  </script>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <nav class="navbar">
+    <a class="nav-brand" href="index.html"><span class="brand-icon">⚡</span> DSA Visualizer</a>
+    <div class="nav-links">
+      <a href="array.html" class="nav-link">Array</a>
+      <a href="linked-list.html" class="nav-link active">Linked List</a>
+      <a href="bst.html" class="nav-link">BST</a>
+      <a href="graph.html" class="nav-link">Graph</a>
+    </div>
+    <div class="navbar-actions"><button class="theme-toggle-btn" aria-label="Toggle theme">🌙</button></div>
+  </nav>
+
+  <div class="visualizer-page">
+    <div class="mobile-panel-tabs">
+      <button class="active" data-panel="canvas">Canvas</button>
+      <button data-panel="pseudocode">Code</button>
+      <button data-panel="log">Log</button>
+    </div>
+    <section class="canvas-area mobile-visible" id="canvas-area">
+      <div class="visualization-container" id="visualization-container">
+        <div class="empty-state" id="empty-state"><span class="empty-icon">🔗</span><span>Loading default list…</span></div>
+      </div>
+      <div class="step-progress"><div class="step-progress-bar" id="step-progress" style="width:0%"></div></div>
+    </section>
+    <div class="controls-bar">
+      <div class="controls-left">
+        <div class="custom-dropdown" id="operation-dropdown"></div>
+        <div class="input-group" id="input-group"></div>
+        <button class="btn-random" id="random-btn">🎲 Random</button>
+        <button class="btn btn-primary" id="run-btn">▶ Run</button>
+      </div>
+      <div class="controls-right">
+        <button class="btn btn-secondary" id="play-btn" disabled>▶ Play</button>
+        <button class="btn btn-secondary" id="pause-btn" disabled>⏸ Pause</button>
+        <button class="btn btn-secondary" id="reset-btn">⏹ Reset</button>
+        <div class="controls-divider"></div>
+        <div class="speed-control">
+          <label>Speed</label>
+          <input type="range" class="speed-slider" id="speed-slider" min="0" max="4" value="0" step="1">
+          <span class="speed-label" id="speed-label">1x</span>
+        </div>
+      </div>
+    </div>
+    <div class="panels-container">
+      <aside class="panel pseudocode-panel mobile-visible" id="pseudocode-panel">
+        <div class="panel-header">Pseudocode</div>
+        <div class="panel-body" id="pseudocode-body"></div>
+      </aside>
+      <aside class="panel log-panel mobile-visible" id="log-panel">
+        <div class="panel-header">Operation Log <button class="btn-icon" id="clear-log-btn">Clear</button></div>
+        <div class="panel-body" id="log-body"></div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="../js/linkedlist-visualizer.js"></script>
+</body>
+</html>
