@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Graph Visualizer — step-by-step animations for Graph operations including BFS and DFS">
+  <title>Graph Visualizer — DSA Visualizer</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="nav-back" href="index.html">← Back</a>
+    <h1 class="nav-title">Graph Visualizer</h1>
+    <span class="nav-badge purple">Graph</span>
+  </nav>
+
+  <div class="visualizer-page">
+    <!-- Mobile panel tabs -->
+    <div class="mobile-panel-tabs">
+      <button class="active" data-panel="canvas">Visual</button>
+      <button data-panel="pseudocode">Code</button>
+      <button data-panel="log">Log</button>
+    </div>
+
+    <div class="visualizer-layout">
+      <!-- Left: Pseudocode Panel -->
+      <aside class="panel pseudocode-panel mobile-visible" id="pseudocode-panel">
+        <div class="panel-header">Pseudocode</div>
+        <div class="panel-body" id="pseudocode-body"></div>
+      </aside>
+
+      <!-- Center: Canvas -->
+      <section class="canvas-area mobile-visible" id="canvas-area">
+        <div class="visualization-container" id="visualization-container">
+          <div class="empty-state" id="empty-state">
+            <span class="empty-icon">🕸️</span>
+            <span>Configure graph parameters and click Create Graph</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Log Panel -->
+      <aside class="panel log-panel" id="log-panel">
+        <div class="panel-header">
+          Operation Log
+          <button class="btn-icon" id="clear-log-btn">Clear</button>
+        </div>
+        <div class="panel-body" id="log-body"></div>
+      </aside>
+    </div>
+
+    <!-- Controls Bar -->
+    <footer class="controls-bar" style="height: auto; padding: 12px 24px;">
+      <div class="controls-left" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div class="select-wrapper">
+            <select class="select-custom" id="operation-select">
+              <option value="create">Create Graph</option>
+              <option value="dfs">DFS Traversal</option>
+              <option value="bfs">BFS Traversal</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center;" id="graph-config-group">
+            <label class="input-label" style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox" id="directed-checkbox"> Directed
+            </label>
+            <label class="input-label" style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox" id="weighted-checkbox"> Weighted
+            </label>
+          </div>
+
+          <div class="input-group" id="input-group">
+            <!-- Rendered dynamically by JS -->
+          </div>
+
+          <button class="btn btn-primary" id="run-btn">▶ Run</button>
+        </div>
+
+        <!-- Special prompt/instructions area for the adjacency list vector -->
+        <div id="adjacency-input-container" style="width: 100%; max-width: 600px; display: none;">
+          <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+            <div style="flex: 1;">
+              <label class="input-label" style="display: block; margin-bottom: 2px;">Adjacency List (one line per node list, space or comma separated):</label>
+              <textarea id="adjacency-list-textarea" class="input-field" style="width: 100%; height: 80px; font-family: monospace; resize: none;" placeholder="e.g. For unweighted (n=3):&#10;1, 2 (neighbors of 0)&#10;2 (neighbors of 1)&#10;0 (neighbors of 2)"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-right" style="align-self: center;">
+        <button class="btn btn-secondary" id="play-btn" disabled>▶ Play</button>
+        <button class="btn btn-secondary" id="pause-btn" disabled>⏸ Pause</button>
+        <button class="btn btn-secondary" id="reset-btn">⏹ Reset</button>
+        <div class="controls-divider"></div>
+        <div class="speed-control">
+          <label>Speed</label>
+          <input type="range" class="speed-slider" id="speed-slider" min="0" max="4" value="0" step="1">
+          <span class="speed-label" id="speed-label">1x</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="js/graph-visualizer.js"></script>
+</body>
+</html>
