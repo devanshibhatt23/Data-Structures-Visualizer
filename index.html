@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive Data Structures & Algorithms Visualizer — step-by-step animations for Arrays, Linked Lists, and more.">
+  <title>DSA Visualizer — Interactive Data Structure Animations</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Ambient background -->
+  <div class="bg-grid"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="nav-brand" href="index.html">
+      <span class="brand-icon">⚡</span>
+      DSA Visualizer
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="home-container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Visualize <span class="gradient-text">Data Structures</span> in Action</h1>
+      <p>Step through operations on arrays, linked lists, trees, and graphs with animated visuals, pseudocode highlighting, and detailed logs.</p>
+    </section>
+
+    <!-- Data Structure Cards -->
+    <div class="ds-grid">
+      <!-- Array Card -->
+      <a href="array.html" class="ds-card card-cyan" id="card-array">
+        <span class="card-arrow">→</span>
+        <div class="card-icon">📊</div>
+        <h2>Arrays</h2>
+        <p class="card-desc">Explore contiguous memory storage with indexed access, insertion, and deletion — all animated step by step.</p>
+        <ul class="card-features">
+          <li>Create</li>
+          <li>Insert</li>
+          <li>Delete</li>
+        </ul>
+      </a>
+
+      <!-- Linked List Card -->
+      <a href="linked-list.html" class="ds-card card-purple" id="card-linked-list">
+        <span class="card-arrow">→</span>
+        <div class="card-icon">🔗</div>
+        <h2>Singly Linked List</h2>
+        <p class="card-desc">Visualize node-based storage with pointer rewiring, traversal, searching, and finding the middle node.</p>
+        <ul class="card-features">
+          <li>Create</li>
+          <li>Search</li>
+          <li>Insert</li>
+          <li>Delete</li>
+          <li>Find Middle</li>
+        </ul>
+      </a>
+
+      <!-- BST Card -->
+      <a href="bst.html" class="ds-card card-pink" id="card-bst">
+        <span class="card-arrow">→</span>
+        <div class="card-icon">🌲</div>
+        <h2>Binary Search Tree</h2>
+        <p class="card-desc">Observe recursive properties, traversals, and structural updates during insert and delete.</p>
+        <ul class="card-features">
+          <li>Create Random</li>
+          <li>Search</li>
+          <li>Insert</li>
+          <li>Delete</li>
+        </ul>
+      </a>
+
+      <!-- Graph Card -->
+      <a href="graph.html" class="ds-card card-amber" id="card-graph">
+        <span class="card-arrow">→</span>
+        <div class="card-icon">🕸️</div>
+        <h2>Graphs</h2>
+        <p class="card-desc">Explore BFS and DFS traversals on customizable directed, undirected, and weighted networks.</p>
+        <ul class="card-features">
+          <li>Create Network</li>
+          <li>DFS Traversal</li>
+          <li>BFS Traversal</li>
+        </ul>
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="home-footer">
+      Built with HTML, CSS & JavaScript — no frameworks, just clean code.
+    </footer>
+  </div>
+</body>
+</html>
