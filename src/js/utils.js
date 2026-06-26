@@ -97,8 +97,8 @@ export function randomWeightedGraph(n = 5) {
 }
 
 export function generateDAG(n = null) {
-  n = n ?? randomInt(7, 8);
-  n = Math.max(7, Math.min(n, 10));
+  // Always generate 7–10 nodes for a meaningful DAG visualization
+  n = (n == null) ? randomInt(7, 8) : Math.max(7, Math.min(n, 10));
   const adj = Array.from({ length: n }, () => []);
 
   const numLayers = Math.min(4, Math.max(3, Math.ceil(n / 2)));

@@ -2,9 +2,8 @@ import { AnimationEngine } from './animation-engine.js';
 import { PseudocodePanel, LogPanel, AuxStructurePanel } from './ui-panels.js';
 import { CustomDropdown } from './custom-dropdown.js';
 import { DEFAULTS, randomGraph, randomWeightedGraph, generateDAG, generateWeightedDAG, randomInt } from './utils.js';
-import { setupMobileTabs, setupSpeedControl, setupFitToScreen, setupPlaybackButtons } from './visualizer-base.js';
-import { GRAPH as PC } from './pseudocode-snippets.js';
 import { setupMobileTabs, setupSpeedControl, setupFitToScreen } from './visualizer-base.js';
+import { GRAPH as PC } from './pseudocode-snippets.js';
 
 const GRAPH_OPERATIONS = [
   { value: 'create', label: 'Create Graph', icon: '⊞' },
@@ -81,6 +80,9 @@ class GraphVisualizer {
       },
       onReset: () => {
         this._updatePlaybackControls();
+      },
+      onPlaybackChange: () => {
+        this._updatePlaybackControls();
       }
     });
 
@@ -136,6 +138,9 @@ class GraphVisualizer {
   _fillRandom() {
     const op = this.dropdown.getValue();
     if (op === 'create') {
+      // Reset any running animation first
+      this.engine.reset();
+      this.auxPanel.reset();
       const weighted = this.weightedCheckbox?.checked;
       const g = weighted ? randomWeightedGraph(6) : randomGraph(6);
       this._applyGraphToForm(g);
@@ -147,8 +152,14 @@ class GraphVisualizer {
   _fillDAG() {
     const op = this.dropdown.getValue();
     if (op !== 'create') return;
+    // Reset any running animation first
+    this.engine.reset();
+    this.auxPanel.reset();
     const weighted = this.weightedCheckbox?.checked;
-    const g = weighted ? generateWeightedDAG(6) : generateDAG(6);
+    // Pass null so generateDAG picks randomInt(7,8) naturally
+    const g = weighted ? generateWeightedDAG(null) : generateDAG(null);
+    // Force directed on both checkbox and form
+    if (this.directedCheckbox) this.directedCheckbox.checked = true;
     this._applyGraphToForm(g);
     this._generateCreateSteps(g.n, g.m);
     this.engine.play();
@@ -511,28 +522,40 @@ class GraphVisualizer {
     const traversal = [];
     const nodeStates = {};
     const edgesHighlight = [];
-    const syncStack = () => this.auxPanel.setItems(stack.map(String));
+
+    // Sync stack panel: items are stored bottom→top, display with top at top
+    const syncStack = (hints = {}) => this.auxPanel.setStack(stack.map(String), hints);
 
     events.forEach(ev => {
       if (ev.type === 'push') {
         steps.push({
           description: `stack.push(${ev.node})`, pseudocodeLine: 3,
           action: async () => {
-            stack.push(ev.node);
-            if (ev.from !== undefined) { nodeStates[ev.node] = 'visiting'; edgesHighlight.push({ u: ev.from, v: ev.node }); }
-            syncStack();
+            stack.push(ev.node); // push to top (end of array)
+            if (ev.from !== undefined) {
+              nodeStates[ev.node] = 'visiting';
+              edgesHighlight.push({ u: ev.from, v: ev.node });
+            }
+            syncStack({ highlightTop: true });
             this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
           },
         });
       } else if (ev.type === 'pop') {
         steps.push({
           description: `u = stack.pop() → ${ev.node}`, pseudocodeLine: 5,
-          action: async () => { stack.pop(); syncStack(); },
+          action: async () => {
+            const popped = stack.pop(); // pop from top
+            // Show the popped element in the "popped zone" briefly
+            syncStack({ popped: String(popped), highlightTop: false });
+            this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
+          },
         });
       } else if (ev.type === 'skip') {
         steps.push({
           description: `visited[${ev.node}] already true — skip`, pseudocodeLine: 6,
-          action: async () => {},
+          action: async () => {
+            syncStack({});
+          },
         });
       } else if (ev.type === 'visit') {
         steps.push({
@@ -542,6 +565,7 @@ class GraphVisualizer {
             traversal.push(ev.node);
             Object.keys(nodeStates).forEach(k => { if (nodeStates[k] === 'current') nodeStates[k] = 'visited'; });
             nodeStates[ev.node] = 'current';
+            syncStack({});
             this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
           },
         });
@@ -594,25 +618,33 @@ class GraphVisualizer {
     const traversal = [];
     const nodeStates = {};
     const edgesHighlight = [];
-    const syncQueue = () => this.auxPanel.setItems(queue.map(String));
+
+    const syncQueue = (hints = {}) => this.auxPanel.setQueue(queue.map(String), hints);
 
     events.forEach(ev => {
       if (ev.type === 'enqueue') {
         steps.push({
-          description: ev.init ? `queue.enqueue(${ev.node}); visited[${ev.node}] = true` : `queue.enqueue(${ev.node}); visited[${ev.node}] = true`,
+          description: ev.init
+            ? `queue.enqueue(${ev.node}); visited[${ev.node}] = true`
+            : `queue.enqueue(${ev.node}); visited[${ev.node}] = true`,
           pseudocodeLine: ev.init ? 3 : 9,
           action: async () => {
             queue.push(ev.node);
             nodeStates[ev.node] = 'visiting';
             if (ev.from !== undefined) edgesHighlight.push({ u: ev.from, v: ev.node });
-            syncQueue();
+            syncQueue({ highlightRear: true });
             this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
           },
         });
       } else if (ev.type === 'dequeue') {
         steps.push({
           description: `u = queue.dequeue() → ${ev.node}`, pseudocodeLine: 5,
-          action: async () => { queue.shift(); syncQueue(); },
+          action: async () => {
+            const dequeued = queue.shift();
+            // Show the dequeued element in the dequeued zone
+            syncQueue({ dequeued: String(dequeued), highlightFront: false });
+            this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
+          },
         });
       } else if (ev.type === 'visit') {
         steps.push({
@@ -621,6 +653,7 @@ class GraphVisualizer {
             traversal.push(ev.node);
             Object.keys(nodeStates).forEach(k => { if (nodeStates[k] === 'current') nodeStates[k] = 'visited'; });
             nodeStates[ev.node] = 'current';
+            syncQueue({});
             this.renderGraph({ ...nodeStates }, [...edgesHighlight], [...traversal]);
           },
         });
@@ -741,11 +774,17 @@ class GraphVisualizer {
     const steps = [];
     const nodeStates = {};
 
-    this.auxPanel.setItems(queue.map(String));
+    // Helper to sync queue panel with proper FIFO hints
+    const syncQueue = (hints = {}) => this.auxPanel.setQueue(queue.map(String), hints);
+
+    syncQueue({});
 
     steps.push({
       description: `Initialize queue: [${queue.join(', ')}]`, pseudocodeLine: 2,
-      action: async () => this.renderGraph(),
+      action: async () => {
+        syncQueue({ highlightFront: true });
+        this.renderGraph();
+      },
     });
 
     while (queue.length > 0) {
@@ -753,7 +792,8 @@ class GraphVisualizer {
       steps.push({
         description: `Dequeue node ${u}`, pseudocodeLine: 4,
         action: async () => {
-          this.auxPanel.setItems(queue.map(String));
+          // Show dequeued element in zone, then update queue display
+          this.auxPanel.setQueue(queue.map(String), { dequeued: String(u) });
           result.push(u);
           nodeStates[u] = 'current';
           this.renderGraph({ ...nodeStates }, [], [...result]);
@@ -766,6 +806,7 @@ class GraphVisualizer {
         steps.push({
           description: `Decrement indegree[${v}] → ${indegree[v]}`, pseudocodeLine: 7,
           action: async () => {
+            syncQueue({});
             this.renderGraph({ ...nodeStates }, [{ u, v }], [...result]);
           },
         });
@@ -775,7 +816,7 @@ class GraphVisualizer {
             description: `Enqueue node ${v} (indegree = 0)`, pseudocodeLine: 8,
             action: async () => {
               nodeStates[v] = 'visiting';
-              this.auxPanel.setItems(queue.map(String));
+              syncQueue({ highlightRear: true });
               this.renderGraph({ ...nodeStates }, [], [...result]);
             },
           });
